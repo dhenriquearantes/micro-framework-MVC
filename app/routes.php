@@ -1,4 +1,12 @@
 <?php
 
-$router->get('', 'App\Controllers\HomeController@index');
-$router->get('about', 'App\Controllers\HomeController@about');
+use App\Controllers\HomeController;
+use App\Route\Router;
+use App\Https\Request;
+
+$router = new Router(new Request);
+
+$router->register("/", "GET", "HomeController", "index");
+$router->register("/about", "GET", "HomeController", "about");
+
+$router->dispatcher();
