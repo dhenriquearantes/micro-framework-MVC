@@ -6,7 +6,8 @@ use App\Https\Request;
 
 $router = new Router(new Request);
 
-$router->register("/", "GET", "HomeController", "index");
-$router->register("/about", "GET", "HomeController", "about");
+$router->register("", "GET", HomeController::class, "index");
+$router->register("/about", "GET", HomeController::class, "about");
+$router->register("/items/{id}", "GET", HomeController::class, "items");
 
 $router->dispatcher();

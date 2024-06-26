@@ -13,5 +13,9 @@ class HomeController
     {
         echo "About Page";
     }
+    public function items()
+    {
+        echo "items page";
+    }
 
 }
