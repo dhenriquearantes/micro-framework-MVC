@@ -14,7 +14,7 @@ class Router
         $this->request = $request;
     } 
 
-    public function register($uri, $method, $controller, $action)
+    public function registerRoute($uri, $method, $controller, $action)
     {
         $this->routes[] = [
             'uri' => $uri,
@@ -26,25 +26,38 @@ class Router
 
     public function dispatcher()
     {
-        $method = $this->request->method();
         $uri = $this->request->uri();
+        $method = $this->request->method();
 
         foreach ($this->routes as $route) {
+            $pattern = preg_replace('/\{[a-zA-Z]+\}/', '([a-zA-Z0-9_-]+)', $route['uri']);
+            $pattern = str_replace('/', '\/', $pattern);
 
+            if (preg_match('/^' . $pattern . '$/', $uri, $matches) && $route['method'] == $method) {
+                array_shift($matches);
 
-            if ($route['uri'] == $uri && $route['method'] == $method) {
                 $controllerName = $route['controller'];
                 $action = $route['action'];
-                $uri = $route['uri'];             
 
                 $controller = new $controllerName;
-                call_user_func_array([$controller, $action], []);
+                call_user_func_array([$controller, $action], $matches);
 
                 return;
-            } 
-
-
+            }   
         }
+
+        $this->notFound();
     }
+
+
+    public function notFound()
+    {
+        http_response_code(404);
+        echo "Not Found";
+
+    }
+ 
+    
+
     
 }
