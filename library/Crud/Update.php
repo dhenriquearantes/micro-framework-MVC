@@ -1,6 +1,7 @@
 <?php
 
 namespace Library\Crud;
+use App\Database;
 
 use App\Helpers;
 use Exception;

@@ -1,0 +1,1 @@
+{"version":1,"defects":{"InsertTest::testSimpleInsert":4,"InsertTest::testInsertBatch":4},"times":{"InsertTest::testSimpleInsert":31.314,"InsertTest::testInsertBatch":7.665}}

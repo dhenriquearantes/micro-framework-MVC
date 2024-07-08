@@ -12,8 +12,8 @@ $router->registerRoute("", "GET", HomeController::class, "index");
 $router->registerRoute("/user", "GET", UserController::class, "index");
 $router->registerRoute("/user/{id}", "GET", UserController::class, "show");
 $router->registerRoute("/user/store", "POST", UserController::class, "store");
-$router->registerRoute("/user/delete/{id}", "DELETE", UserController::class, "delete");
-$router->registerRoute("/user/update/{id}", "PUT", UserController::class, "update");
+$router->registerRoute("/user/remove/{id}", "DELETE", UserController::class, "remove");
+$router->registerRoute("/user/edit/{id}", "PUT", UserController::class, "edit");
 $router->registerRoute("/about", "GET", HomeController::class, "about");
 
 

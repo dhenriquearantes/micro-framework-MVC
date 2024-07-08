@@ -2,110 +2,50 @@
 
 namespace App\Model;
 
-use App\Database;
-use PDO;
+use Library\Crud\Crud;
 
-abstract class Model
+class Model extends Crud
 {
-  protected static $table;
+  protected $table;
 
-  public static function find(int $id): array
+  public function find(int $id): array
   {
-    $pdo = Database::createConnection();
-    $stmt = $pdo->prepare("SELECT * FROM " . static::$table . " WHERE id = :id");
-    try {
-      $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-      $stmt->execute();
-      return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (\PDOException $e) {
-      echo $e->getMessage();
-    }
-
-
+    return $this->select("", $this->table)
+      ->where(['id', '=', $id])
+      ->first();
   }
 
-  public static function all(): array
+  public function all(): array
   {
-    $pdo = Database::createConnection();
-    $stmt = $pdo->prepare("SELECT * FROM " . static::$table);
-    try {
-      $stmt->execute();
-      return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (\PDOException $e) {
-      echo $e->getMessage(); 
-    }
+    return $this->select("", $this->table)
+      ->order(['id', 'asc'])
+      ->get();
   }
 
-  public static function create(array $data): bool
+  public function create($requestData)
   {
-    $pdo = Database::createConnection();
-
-    date_default_timezone_set('America/Sao_Paulo');
-    $currentDateTime = date('Y-m-d H:i:s');
-
-    $data['created_at'] = $currentDateTime;
-    $data['updated_at'] = $currentDateTime;
-
-    $columns = implode(", ", array_keys($data));
-    $values = ":" . implode(", :", array_keys($data));
-
-    $sql = "INSERT INTO " . static::$table . " ($columns) VALUES ($values)";
-
-    try {
-      $stmt = $pdo->prepare($sql);
-  
-      foreach ($data as $key => &$value) {
-        $stmt->bindParam(":$key", $value);
-      }
-      return $stmt->execute();
-      
-    } catch (\PDOException $e) {
-      echo $e->getMessage(); 
-    }
+    return $this->insert()
+      ->insertTable("", $this->table)
+      ->into($requestData)
+      ->values($requestData)
+      ->get();
   }
 
-  public static function update(int $id, array $requestData): bool
+  public function upgrade(int $id, array $requestData)
   {
-    $pdo = Database::createConnection();
-
-    date_default_timezone_set('America/Sao_Paulo');
-    $currentDateTime = date('Y-m-d H:i:s');
-
-    $requestData['updated_at'] = $currentDateTime;
-
-    $setClause = [];
-    foreach ($requestData as $key => $value) {
-      $setClause[] = "$key = :$key";
-    }
-
-    $sql = "UPDATE " . static::$table . " SET " . implode(", ", $setClause) . " WHERE id = :id";
-
-    try {
-      $stmt = $pdo->prepare($sql);
-  
-      foreach ($requestData as $key => &$value) {
-        $stmt->bindParam(":$key", $value);
-      }
-      $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-      return $stmt->execute();
-
-    } catch (\PDOException $e) {
-      echo $e->getMessage(); 
-    }
+    return $this->update() 
+      ->updateTable("", $this->table)
+      ->set($requestData)
+      ->where(["id", "=", $id])
+      ->get();
   }
 
-
-  public static function delete(int $id)
+  public function remove(int $id)
   {
-    $pdo = Database::createConnection();
-    $sql = "DELETE FROM " . static::$table . " WHERE id = :id";
-    try {      
-      $stmt = $pdo->prepare($sql);
-      $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-      return $stmt->execute();
-    } catch (\PDOException $e) {
-      echo $e->getMessage(); 
-    }
+    return $this->delete()
+      ->deleteTable("", $this->table)
+      ->where(["id", "=", $id])
+      ->get();
   }
+
 }

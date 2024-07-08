@@ -3,8 +3,7 @@
 namespace Library\Crud;
 
 use Exception;
-use Core\Services\Database\Connection;
-
+use App\Database;
 class Select extends Crud
 {
     public const SELECT = 'SELECT';

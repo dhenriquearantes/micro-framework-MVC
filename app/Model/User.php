@@ -4,8 +4,6 @@ namespace App\Model;
 
 class User extends Model
 {
-  protected static $table = 'users'; 
+  protected $table = 'users'; 
   protected $primaryKey = 'id';
-
-  
 }
